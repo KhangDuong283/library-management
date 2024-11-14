@@ -13,4 +13,7 @@ router.route("/:id")
     .put(muon.update)
     .delete(muon.delete);
 
+router.route("/return/:id")
+    .put(muon.returnBook);
+
 module.exports = router;
