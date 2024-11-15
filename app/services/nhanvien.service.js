@@ -67,6 +67,20 @@ class NhanVienService {
         }
         return result;
     }
+
+    // Đăng nhập
+    async login(payload) {
+        const existingNhanvien = await this.NhanVien.findOne(
+            {
+                sodienthoai: payload.dienThoai,
+                password: payload.password
+            });
+
+        if (existingNhanvien == null) {
+            throw new ApiError(401, "Số điện thoại hoặc mật khẩu không chính xác.");
+        }
+        return existingNhanvien;
+    }
 }
 
 module.exports = NhanVienService;

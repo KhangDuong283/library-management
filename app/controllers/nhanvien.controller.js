@@ -96,3 +96,13 @@ exports.deleteAll = async (req, res, next) => {
         next(new ApiError(500, "Không thể xóa tất cả nhân viên"));
     }
 };
+
+exports.login = async (req, res, next) => {
+    try {
+        const nhanVienService = new NhanVienService(MongoDB.client);
+        const nhanvien = await nhanVienService.login(req.body);
+        res.send(nhanvien);
+    } catch (error) {
+        next(new ApiError(500, "Lỗi khi đăng nhập " + error.message));
+    }
+}

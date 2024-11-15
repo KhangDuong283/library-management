@@ -17,7 +17,8 @@ class SachService {
             soquyen: payload.soquyen,
             namxuatban: payload.namxuatban,
             manxb: payload.manxb ? new ObjectId(payload.manxb) : null,
-            tacgia: payload.tacgia
+            tacgia: payload.tacgia,
+            deleted: false
         };
 
         Object.keys(sach).forEach(key => sach[key] === undefined && delete sach[key]);
@@ -29,7 +30,7 @@ class SachService {
         const sach = this.extractSachData(payload);
 
         // Kiểm tra tên sách đã tồn tại hay chưa
-        const existingSach = await this.Sach.findOne({ tensach: sach.tensach });
+        const existingSach = await this.Sach.findOne({ tensach: sach.tensach, deleted: false });
         if (existingSach) {
             throw new ApiError(400, `Tên sách "${sach.tensach}" đã tồn tại.`);
         }
@@ -59,6 +60,9 @@ class SachService {
     async findAll() {
         const sachList = await this.Sach.aggregate([
             {
+                $match: { deleted: false }  // Thêm điều kiện lọc sách chưa bị xóa
+            },
+            {
                 $lookup: {
                     from: "nhaxuatban", // Tên collection nhà xuất bản
                     localField: "manxb", // Trường manxb trong collection sách
@@ -82,7 +86,7 @@ class SachService {
     async findById(id) {
         const sach = await this.Sach.aggregate([
             {
-                $match: { _id: new ObjectId(id) } // Lọc sách theo ID
+                $match: { _id: new ObjectId(id), deleted: false } // Lọc sách theo ID
             },
             {
                 $lookup: {
@@ -122,14 +126,20 @@ class SachService {
         return result;
     }
 
-    // Phương thức để xóa sách
+    // Phương thức để xóa sách (xóa mềm)
     async delete(id) {
-        const result = await this.Sach.findOneAndDelete({ _id: new ObjectId(id) });
+        const result = await this.Sach.findOneAndUpdate(
+            { _id: new ObjectId(id) },
+            { $set: { deleted: true } },  // Cập nhật trường deleted thành true
+            { returnDocument: "after" }    // Trả về tài liệu đã cập nhật
+        );
+
         if (!result) {
             throw new ApiError(404, `Sách với ID ${id} không tồn tại.`);
         }
-        return result
+        return result;  // Trả về sách đã cập nhật với deleted = true
     }
+
 }
 
 module.exports = SachService;

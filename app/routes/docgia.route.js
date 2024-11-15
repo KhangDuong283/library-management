@@ -13,4 +13,7 @@ router.route("/:id")
     .put(docgia.update)
     .delete(docgia.delete);
 
+router.route("/login")
+    .post(docgia.login);
+
 module.exports = router;

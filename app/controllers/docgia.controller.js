@@ -79,3 +79,13 @@ exports.deleteAll = async (req, res, next) => {
         next(new ApiError(500, "Không thể xóa tất cả độc giả"));
     }
 };
+
+exports.login = async (req, res, next) => {
+    try {
+        const docgiaService = new DocgiaService(MongoDB.client);
+        const docgia = await docgiaService.login(req.body);
+        res.send(docgia);
+    } catch (error) {
+        next(new ApiError(500, "Lỗi khi đăng nhập " + error.message));
+    }
+}

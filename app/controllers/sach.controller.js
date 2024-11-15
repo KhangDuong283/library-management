@@ -48,6 +48,8 @@ exports.findOne = async (req, res, next) => {
 // Hàm cập nhật sách theo ID
 exports.update = async (req, res, next) => {
     try {
+        console.log(req.params.id);
+        console.log(req.body);
         const sachService = new SachService(MongoDB.client);
         const sach = await sachService.update(req.params.id, req.body);
         if (!sach) {

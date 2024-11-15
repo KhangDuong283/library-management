@@ -74,6 +74,22 @@ class DocgiaService {
         return result;
     }
 
+    // Đăng nhập
+    async login(payload) {
+        const existingDocGia = await this.Docgia.findOne(
+            {
+                dienThoai: payload.dienThoai,
+                password: payload.password
+            });
+        // console.log(payload.dienThoai);
+        // console.log(existingDocGia == null);
+
+        if (existingDocGia == null) {
+            throw new ApiError(401, "Số điện thoại hoặc mật khẩu không chính xác.");
+        }
+        return existingDocGia;
+    }
+
 
 }
 
