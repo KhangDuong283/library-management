@@ -30,10 +30,10 @@ class SachService {
         const sach = this.extractSachData(payload);
 
         // Kiểm tra tên sách đã tồn tại hay chưa
-        const existingSach = await this.Sach.findOne({ tensach: sach.tensach, deleted: false });
-        if (existingSach) {
-            throw new ApiError(400, `Tên sách "${sach.tensach}" đã tồn tại.`);
-        }
+        // const existingSach = await this.Sach.findOne({ tensach: sach.tensach, deleted: false });
+        // if (existingSach) {
+        //     throw new ApiError(400, `Tên sách "${sach.tensach}" đã tồn tại.`);
+        // }
 
         // Kiểm tra và tạo nhà xuất bản nếu chưa có
         if (sach.manxb) {
