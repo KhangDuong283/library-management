@@ -51,6 +51,14 @@ class DocgiaService {
         return docgia;
     }
 
+    async findByPhone(dienThoai) {
+        const docgia = await this.Docgia.findOne({ dienThoai: dienThoai });
+        if (!docgia) {
+            throw new ApiError(404, `Độc giả với số điện thoại ${dienThoai} không tồn tại.`);
+        }
+        return docgia;
+    }
+
     // Phương thức để cập nhật thông tin độc giả
     async update(id, payload) {
         const docgia = this.extractDocGiaData(payload);

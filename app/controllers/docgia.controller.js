@@ -89,3 +89,16 @@ exports.login = async (req, res, next) => {
         next(new ApiError(500, "Lỗi khi đăng nhập " + error.message));
     }
 }
+
+exports.findByPhone = async (req, res, next) => {
+    try {
+        const docgiaService = new DocgiaService(MongoDB.client);
+        const docgia = await docgiaService.findByPhone(req.params.phone);
+        if (!docgia) {
+            return next(new ApiError(404, "Không tìm thấy độc giả"));
+        }
+        res.send(docgia);
+    } catch (error) {
+        next(new ApiError(500, "Lỗi khi tìm độc giả " + error.message));
+    }
+}

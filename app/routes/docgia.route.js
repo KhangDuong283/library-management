@@ -16,4 +16,7 @@ router.route("/:id")
 router.route("/login")
     .post(docgia.login);
 
+router.route("/phone/:phone")
+    .get(docgia.findByPhone);
+
 module.exports = router;

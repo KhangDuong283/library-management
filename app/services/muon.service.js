@@ -11,23 +11,28 @@ class MuonService {
 
     // Hàm parseDate để chuyển đổi định dạng ngày từ chuỗi 'dd/MM/yyyy' sang đối tượng Date
     parseDate(dateString) {
-        const [day, month, year] = dateString.split('/');
+        const [day, month, year] = dateString.split('-');
         return new Date(`${year}-${month}-${day}T00:00:00Z`);
     }
 
     // Hàm trích xuất dữ liệu mượn sách từ payload  
     extractMuonData(payload) {
+        const today = new Date();
         const muon = {
             maDocGia: new ObjectId(payload.maDocGia),
             maSach: new ObjectId(payload.maSach),
-            ngayMuon: new Date(),
+            ngayMuon: today,
             ngayTra: payload.ngayTra ? this.parseDate(payload.ngayTra) : null,
-            ngayHenTra: payload.ngayHenTra ? this.parseDate(payload.ngayHenTra) : null,
+            ngayHenTra: payload.ngayHenTra
+                ? this.parseDate(payload.ngayHenTra)
+                : new Date(new Date().setDate(today.getDate() + 7)), // Tạo ngày hẹn trả từ hôm nay + 7 ngày
+            status: payload.status || "Đang mượn"
         };
 
         Object.keys(muon).forEach(key => muon[key] === undefined && delete muon[key]);
         return muon;
     }
+
 
 
     // Phương thức để thêm thông tin mượn sách mới
@@ -103,6 +108,7 @@ class MuonService {
                     ngayMuon: 1,
                     ngayTra: 1,
                     ngayHenTra: 1,
+                    status: 1,
                     docGiaInfo: 1,  // Thông tin độc giả
                     sachInfo: 1,    // Thông tin sách
                 }
@@ -159,6 +165,7 @@ class MuonService {
                     ngayMuon: 1,
                     ngayTra: 1,
                     ngayHenTra: 1,
+                    status: 1,
                     docGiaInfo: 1,  // Thông tin độc giả
                     sachInfo: 1     // Thông tin sách
                 }
@@ -211,7 +218,7 @@ class MuonService {
 
         const result = await this.Muon.findOneAndUpdate(
             { _id: new ObjectId(id) },
-            { $set: { ngayTra } },
+            { $set: { ngayTra, status: 'Đã trả' } },
             { returnDocument: "after" }
         );
 
