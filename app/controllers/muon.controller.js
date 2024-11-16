@@ -89,3 +89,59 @@ exports.returnBook = async (req, res, next) => {
         next(new ApiError(500, "Không thể trả sách " + error.message));
     }
 }
+
+exports.extendBorrow = async (req, res, next) => {
+    try {
+        const muonService = new MuonService(MongoDB.client);
+        const muon = await muonService.extendBorrow(req.params.id);
+        if (!muon) {
+            return next(new ApiError(404, "Không tìm thấy thông tin mượn sách để gia hạn"));
+        }
+        res.send(muon);
+    } catch (error) {
+        next(new ApiError(500, "Không thể gia hạn thông tin mượn sách " + error.message));
+    }
+}
+
+exports.requestExtend = async (req, res, next) => {
+    try {
+        const muonService = new MuonService(MongoDB.client);
+        console.log(req.params.id);
+        const muon = await muonService.requestExtend(req.params.id);
+        if (!muon) {
+            return next(new ApiError(404, "Không tìm thấy thông tin mượn sách để yêu cầu gia hạn"));
+        }
+        res.send(muon);
+    } catch (error) {
+        next(new ApiError(500, "Không thể yêu cầu gia hạn thông tin mượn sách " + error.message));
+    }
+}
+
+exports.rejectRequestExtend = async (req, res, next) => {
+    try {
+        const muonService = new MuonService(MongoDB.client);
+        const muon = await muonService.rejectRequestExtend(req.params.id);
+        if (!muon) {
+            return next(new ApiError(404, "Không tìm thấy thông tin mượn sách để từ chối yêu cầu gia hạn"));
+        }
+        res.send(muon);
+    } catch (error) {
+        next(new ApiError(500, "Không thể từ chối yêu cầu gia hạn thông tin mượn sách " + error.message
+        ));
+    }
+}
+
+exports.acceptRequestExtend = async (req, res, next) => {
+    try {
+        const muonService = new MuonService(MongoDB.client);
+        const muon = await muonService.acceptRequestExtend(req.params.id);
+        if (!muon) {
+            return next(new ApiError(404, "Không tìm thấy thông tin mượn sách để chấp nhận yêu cầu gia hạn"));
+        }
+        res.send(muon);
+    } catch (error) {
+        next(new ApiError(500, "Không thể chấp nhận yêu cầu gia hạn thông tin mượn sách " + error
+            .message));
+    }
+}
+

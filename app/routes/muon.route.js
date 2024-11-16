@@ -16,4 +16,16 @@ router.route("/:id")
 router.route("/return/:id")
     .put(muon.returnBook);
 
+router.route("/extend/:id")
+    .put(muon.extendBorrow);
+
+router.route("/request-extend/:id")
+    .put(muon.requestExtend);
+
+router.route("/reject-request-extend/:id")
+    .put(muon.rejectRequestExtend);
+
+router.route("/accept-request-extend/:id")
+    .put(muon.acceptRequestExtend);
+
 module.exports = router;

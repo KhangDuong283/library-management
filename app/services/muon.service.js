@@ -230,6 +230,70 @@ class MuonService {
 
         return result;
     }
+
+    async extendBorrow(id) {
+        const muon = await this.Muon.findOne({ _id: new ObjectId(id) });
+
+        // Cập nhật ngày hẹn trả mới
+        const ngayHenTraMoi = new Date(new Date().setDate(muon.ngayHenTra.getDate() + 7));
+
+        const result = await this.Muon.findOneAndUpdate(
+            { _id: new ObjectId(id) },
+            { $set: { ngayHenTra: ngayHenTraMoi } },
+            { returnDocument: "after" }
+        );
+
+        return result;
+    }
+
+    async requestExtend(id) {
+        const muon = await this.Muon.findOne({ _id: new ObjectId(id) });
+
+        // Cập nhật status thành 'Yêu cầu gia hạn'
+        const result = await this.Muon.findOneAndUpdate(
+            { _id: new ObjectId(id) },
+            { $set: { status: 'Yêu cầu gia hạn' } },
+            { returnDocument: "after" }
+        );
+
+        return result;
+    }
+
+    async rejectRequestExtend(id) {
+        const muon = await this.Muon.findOne({ _id: new ObjectId(id) });
+
+        // Cập nhật status trở về 'Đang mượn'
+        const result = await this.Muon.findOneAndUpdate(
+            { _id: new ObjectId(id) },
+            { $set: { status: 'Đang mượn' } },
+            { returnDocument: "after" }
+        );
+
+        return result;
+    }
+
+    async acceptRequestExtend(id) {
+        const muon = await this.Muon.findOne({ _id: new ObjectId(id) });
+        if (!muon) {
+            throw new ApiError(404, `Thông tin mượn sách với ID ${id} không tồn tại.`);
+        }
+
+        // Cập nhật ngày hẹn trả mới bằng cách cộng thêm 7 ngày vào ngày hẹn trả cũ
+        const ngayHenTraCu = new Date(muon.ngayHenTra);
+        const ngayHenTraMoi = new Date(ngayHenTraCu);
+        ngayHenTraMoi.setDate(ngayHenTraMoi.getDate() + 7);
+
+        // Cập nhật status thành 'Đã gia hạn' và ngày hẹn trả mới
+        const result = await this.Muon.findOneAndUpdate(
+            { _id: new ObjectId(id) },
+            { $set: { ngayHenTra: ngayHenTraMoi, status: "Đang mượn" } },
+            { returnDocument: "after" }
+        );
+
+        return result;
+    }
+
+
 }
 
 module.exports = MuonService;
