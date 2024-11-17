@@ -7,13 +7,11 @@ exports.create = async (req, res, next) => {
     if (!req.body?.tensach) {
         return next(new ApiError(400, "Tên sách không được để trống"));
     }
-
     try {
         const sachService = new SachService(MongoDB.client);
         const document = await sachService.create(req.body);
         return res.status(201).send(document);
     } catch (error) {
-        console.error("Lỗi khi tạo sách:", error);
         return next(new ApiError(500, "Không thể tạo sách"));
     }
 };

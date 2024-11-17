@@ -18,6 +18,7 @@ class SachService {
             namxuatban: payload.namxuatban,
             manxb: payload.manxb ? new ObjectId(payload.manxb) : null,
             tacgia: payload.tacgia,
+            imageUrl: payload.imageUrl,
             deleted: false
         };
 
@@ -29,27 +30,10 @@ class SachService {
     async create(payload) {
         const sach = this.extractSachData(payload);
 
-        // Kiểm tra tên sách đã tồn tại hay chưa
-        // const existingSach = await this.Sach.findOne({ tensach: sach.tensach, deleted: false });
-        // if (existingSach) {
-        //     throw new ApiError(400, `Tên sách "${sach.tensach}" đã tồn tại.`);
-        // }
-
         // Kiểm tra và tạo nhà xuất bản nếu chưa có
-        if (sach.manxb) {
-            const nhaxuatban = await this.nhaxuatbanService.findById(sach.manxb.toString());
-            if (!nhaxuatban) {
-                throw new ApiError(404, `Nhà xuất bản với ID ${sach.manxb} không tồn tại.`);
-            }
-        } else {
-            // Nếu không có manxb, tự tạo nhà xuất bản mới
-            const nhaxuatbanPayload = {
-                ten: payload.tennhaxuatban,  // Thêm tên nhà xuất bản nếu có
-                diachi: payload.diachi,
-                sdt: payload.sdt
-            };
-            const nhaxuatban = await this.nhaxuatbanService.create(nhaxuatbanPayload);
-            sach.manxb = nhaxuatban._id; // Gắn ID nhà xuất bản vào sách
+        const nhaxuatban = await this.nhaxuatbanService.findById(sach.manxb.toString());
+        if (!nhaxuatban) {
+            throw new ApiError(404, `Nhà xuất bản với ID ${sach.manxb} không tồn tại.`);
         }
 
         // Thêm sách mới vào cơ sở dữ liệu
