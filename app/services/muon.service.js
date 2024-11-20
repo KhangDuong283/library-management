@@ -23,9 +23,9 @@ class MuonService {
             maSach: new ObjectId(payload.maSach),
             ngayMuon: today,
             ngayTra: payload.ngayTra ? this.parseDate(payload.ngayTra) : null,
-            ngayHenTra: payload.ngayHenTra
-                ? this.parseDate(payload.ngayHenTra)
-                : new Date(new Date().setDate(today.getDate() + 7)), // Tạo ngày hẹn trả từ hôm nay + 7 ngày
+            ngayHenTra: payload.ngayHenTra,
+            // ? this.parseDate(payload.ngayHenTra)
+            // : new Date(new Date().setDate(today.getDate() + 7)), 
             status: payload.status || "Đang mượn"
         };
 
@@ -51,7 +51,7 @@ class MuonService {
             throw new ApiError(404, `Sách với ID ${muon.maSach} không tồn tại.`);
         }
 
-        console.log(sach.soquyen);
+        // console.log(sach.soquyen);
         // Kiểm tra số quyển còn lại của sách
         if (sach.soquyen <= 0) {
             throw new ApiError(400, `Sách với ID ${muon.maSach} hiện không còn quyển nào để mượn.`);
