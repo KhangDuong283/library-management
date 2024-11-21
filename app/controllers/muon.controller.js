@@ -145,3 +145,15 @@ exports.acceptRequestExtend = async (req, res, next) => {
     }
 }
 
+exports.choMuon = async (req, res, next) => {
+    try {
+        const muonService = new MuonService(MongoDB.client);
+        const muon = await muonService.choMuon(req.params.id);
+        if (!muon) {
+            return next(new ApiError(404, "Không tìm thấy thông tin mượn sách để cho mượn"));
+        }
+        res.send(muon);
+    } catch (error) {
+        next(new ApiError(500, "Không thể cho mượn thông tin mượn sách " + error.message));
+    }
+}

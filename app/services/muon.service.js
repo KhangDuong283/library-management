@@ -293,6 +293,22 @@ class MuonService {
         return result;
     }
 
+    async choMuon(id) {
+        const muon = await this.Muon.findOne({ _id: new ObjectId(id) });
+        if (!muon) {
+            throw new ApiError(404, `Thông tin mượn sách với ID ${id} không tồn tại.`);
+        }
+
+        // Cập nhật status thành 'Đang mượn'
+        const result = await this.Muon.findOneAndUpdate(
+            { _id: new ObjectId(id) },
+            { $set: { status: 'Đang mượn' } },
+            { returnDocument: "after" }
+        );
+
+        return result;
+    }
+
 
 }
 

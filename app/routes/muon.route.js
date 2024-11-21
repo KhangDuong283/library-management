@@ -28,4 +28,7 @@ router.route("/reject-request-extend/:id")
 router.route("/accept-request-extend/:id")
     .put(muon.acceptRequestExtend);
 
+router.route("/cho-muon/:id")
+    .put(muon.choMuon);
+
 module.exports = router;
